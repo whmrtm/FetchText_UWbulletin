@@ -64,12 +64,22 @@ class fetch_from_bulletin:
 			self.mail("Today's bulletin",article)			
 			time.sleep(self._interval)
 	
+<<<<<<< HEAD
 # input all the information we need
+=======
+
+
+>>>>>>> f2a197a6af6f05f5455c037b0ea238fdaf54b999
 url = "http://bulletin.uwaterloo.ca/"
 to = input("The email address you want to receive updates: ")
 sender = input("The email you are sending updates with: ")
 passwd = input("The password of you email: ")
 interval = float(input("Time interval between each updates (seconds): "))
+<<<<<<< HEAD
 # then run the program
 fecth = fetch_from_bulletin(url, to, sender, passwd, interval)
 fecth.start()
+=======
+myclass=fetch_from_bulletin(url, to, sender, passwd, interval)
+myclass.start()
+>>>>>>> f2a197a6af6f05f5455c037b0ea238fdaf54b999
