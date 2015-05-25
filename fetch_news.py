@@ -7,18 +7,19 @@ import re
 import time
 
 class fetch_from_bulletin:
-	def __init__(self,url,to):
-		self.myUrl = url
+	def __init__(self, url, to, sender, passwd, interval):
+		self._myUrl = url
 		self.User_agent = "Mozilla/4.0(compatible;MSIR 5.5;Windows NT)"
-		self.headers = {"User-Agent:":self.User_agent}
-		self.sender = 'whmrtm@gmail.com'
-		self.passwd = 'whm9316rtm'
-		self.to = to
+		self._headers = {"User-Agent:":self.User_agent}
+		self._sender = sender
+		self._passwd = passwd
+		self._to = to
+		self._interval = interval
 		self._css = '<link type="text/css" rel="stylesheet" href="https://uwaterloo.ca/daily-bulletin/sites/ca.daily-bulletin/files/css/css_E9Jx7KnM-yqRxjhPa8EV5J8WR_ykPxCCDdg2xV3lpFg.css" media="screen" /><link type="text/css" rel="stylesheet" href="https://uwaterloo.ca/daily-bulletin/sites/ca.daily-bulletin/files/css/css_sRoiJhQvJQq6QeaA_k2TBTUGBBlzX2SqcMVA03KcM3A.css" media="all" /><link type="text/css" rel="stylesheet" href="https://uwaterloo.ca/daily-bulletin/sites/ca.daily-bulletin/files/css/css_gNWCS6wE181QWaYxguqP8_wmzWEeh5_XoIKywvEAozw.css" media="all" /><link type="text/css" rel="stylesheet" href="https://uwaterloo.ca/daily-bulletin/sites/ca.daily-bulletin/files/css/css_JsjqRffb60798aNiwPIdcykQm2v0frI1XERvIaW_E2E.css" media="all" /><link type="text/css" rel="stylesheet" href="https://uwaterloo.ca/daily-bulletin/sites/ca.daily-bulletin/files/css/css_batA2UMU7p9a6KjhhxVxaktSXYsGgGaa2cXmNi_oyMM.css" media="print" />'
 # get the unicode of the UWbulletin
 	def get_article(self):
 		try:
-			req=urllib.request.Request(self.myUrl,headers=self.headers)
+			req=urllib.request.Request(self._myUrl,headers=self._headers)
 			print('Obtain response from the server.......')
 		except:
 			print('Fail to get response.........')
@@ -34,20 +35,20 @@ class fetch_from_bulletin:
 		return thearticle
 	def mail(self,subject,msg):
 			body=MIMEText(msg,'html')
-			body['From']=self.sender
-			body['To']=self.to
+			body['From']=self._sender
+			body['To']=self._to
 			body['Subject']=subject
 			server=smtplib.SMTP("smtp.gmail.com",587)
 			server.ehlo()
 			server.starttls()
 			server.ehlo()
 			try:
-				server.login(self.sender,self.passwd)
+				server.login(self._sender,self._passwd)
 				print("Successfully login........")
 			except:
 				print("Login Failure...........")
 			try:
-				server.sendmail(self.sender,self.to,body.as_string())
+				server.sendmail(self._sender,self._to,body.as_string())
 				print("Mail successfully sent!")
 				server.close()
 			except:
@@ -59,14 +60,14 @@ class fetch_from_bulletin:
 			article=self.get_article()
 			print('Article fetched..........')
 			self.mail("Today's bulletin",article)			
-			time.sleep(86400)
+			time.sleep(self._interval)
 	
 
 
-
-myclass=fetch_from_bulletin("http://bulletin.uwaterloo.ca/","whmowen@gmail.com")
+url = "http://bulletin.uwaterloo.ca/"
+to = input("The email address you want to receive updates: ")
+sender = input("The email you are sending updates with: ")
+passwd = input("The password of you email: ")
+interval = float(input("Time interval between each updates (seconds): "))
+myclass=fetch_from_bulletin(url, to, sender, passwd, interval)
 myclass.start()
-#print(article)
-# What needs to be improved:
-#             execute regularly
-#             use class to conseal the whole module
